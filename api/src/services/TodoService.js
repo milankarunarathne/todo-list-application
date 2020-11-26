@@ -33,6 +33,24 @@ class TodoService {
         }
     }
 
+    async retrieveAllTodos() {
+        try {
+            
+            const result = await this.__todoDb.getAllTodos()
+            
+            return {
+                status: constants.HTTP_STATUS_CODES.OK,
+                body: result
+            }
+
+        } catch (e) {
+            console.error(e.message)
+            return {
+                status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+                body: 'Internal Server Error'
+            }
+        }
+    }
 
 }
 

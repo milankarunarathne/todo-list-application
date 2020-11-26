@@ -1,4 +1,4 @@
-
+const _ = require('lodash')
 const constants = require('../constants')
 
 class TodoDb {
@@ -21,6 +21,19 @@ class TodoDb {
             }
         }
         return null
+    }
+
+    async getAllTodos () {
+     
+        const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
+            .find().toArray()
+
+        if (_.size(result) > 0) {
+            return result
+        }
+
+        return []
+
     }
 }
 

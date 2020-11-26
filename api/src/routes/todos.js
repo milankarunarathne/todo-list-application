@@ -9,4 +9,10 @@ router.post('/create', async (req, res) => {
     res.status(result.status).send(result.body)
 })
 
+router.get('', async (req, res) => {
+    const todoService = new TodoService(req.app.locals.db)
+    const result = await todoService.retrieveAllTodos()
+    res.status(result.status).send(result.body)
+})
+
 module.exports = { todosRouter: router }
