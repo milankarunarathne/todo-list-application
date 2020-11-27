@@ -21,4 +21,11 @@ router.delete('/remove/:todoId', async (req, res) => {
     res.status(result.status).send(result.body)
 })
 
+router.delete('/removemany', async (req, res) => {
+    const todoService = new TodoService(req.app.locals.db)
+    const result = await todoService.removeManyTodos(req.body.idArray)
+    res.status(result.status).send(result.body)
+})
+
+
 module.exports = { todosRouter: router }

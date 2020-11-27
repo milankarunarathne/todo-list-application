@@ -76,9 +76,46 @@ class TodoService {
                 }
             }
 
-
         } catch (e) {
+            return {
+                status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+                body: 'Internal Server Error'
+            }
+        }
+    }
+
+    async removeManyTodos (idArray) {
+        if (_.isEmpty(idArray)) {
+            return {
+                status: constants.HTTP_STATUS_CODES.BAD_REQUEST,
+                body: 'Bad request'
+            }
+        }
+
+        try {
+            const result = await this.__todoDb.deleteManyTodos(idArray)
+            if ( result === 0 ) {
+                return {
+                    status: constants.HTTP_STATUS_CODES.GONE,
+                    body: 'Already Deleted or Doesn\'t Exist'
+                }
+            } else if ( result < idArray.length) {
+                return {
+                    status: constants.HTTP_STATUS_CODES.OK,
+                    body: 'Successfully Deleted and some Todos alredy deleted'
+                }
+            } else {
+                return {
+                    status: constants.HTTP_STATUS_CODES.OK,
+                    body: 'Successfully Deleted'
+                }
+            }
             
+        } catch (e) {
+            return {
+                status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+                body: 'Internal Server Error'
+            }
         }
     }
 

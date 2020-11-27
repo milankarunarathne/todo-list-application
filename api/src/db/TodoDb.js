@@ -32,7 +32,6 @@ class TodoDb {
         if (_.size(result) > 0) {
             return result
         }
-
         return []
 
     }
@@ -40,6 +39,17 @@ class TodoDb {
     async deleteOneTodo(id) {
         const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
             .deleteOne({ _id: ObjectID(id)})
+
+        if ( result ) {
+            return _.get(result, 'deletedCount', 0)
+        }
+        return null
+    }
+
+    async deleteManyTodos ( IdArray ) {
+        const objectIdArray = IdArray.map(s => ObjectID(s))
+        const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
+            .deleteMany({_id: { $in: objectIdArray}})
 
         if ( result ) {
             return _.get(result, 'deletedCount', 0)
