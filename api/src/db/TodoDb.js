@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const { ObjectID } = require('mongodb')
 const constants = require('../constants')
 
 class TodoDb {
@@ -35,6 +36,17 @@ class TodoDb {
         return []
 
     }
+
+    async deleteOneTodo(id) {
+        const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
+            .deleteOne({ _id: ObjectID(id)})
+
+        if ( result ) {
+            return _.get(result, 'deletedCount', 0)
+        }
+        return null
+    }
+
 }
 
 module.exports = TodoDb
