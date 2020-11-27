@@ -15,6 +15,12 @@ router.get('', async (req, res) => {
     res.status(result.status).send(result.body)
 })
 
+router.patch('/update/:todoId', async (req, res) => {
+    const todoService = new TodoService(req.app.locals.db)
+    const result = await todoService.updateCompletenessOfOneTodo(req.params.todoId, req.body.completed)
+    res.status(result.status).send(result.body)
+})
+
 router.delete('/remove/:todoId', async (req, res) => {
     const todoService = new TodoService(req.app.locals.db)
     const result = await todoService.removeOneTodo(req.params.todoId)
