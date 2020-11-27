@@ -77,6 +77,7 @@ class TodoService {
             }
 
         } catch (e) {
+            console.error(e.message)
             return {
                 status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
                 body: 'Internal Server Error'
@@ -112,6 +113,44 @@ class TodoService {
             }
             
         } catch (e) {
+            console.error(e.message)
+            return {
+                status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+                body: 'Internal Server Error'
+            }
+        }
+    }
+
+    async updateCompletenessOfOneTodo (id, completeness) {
+        if (!ObjectID.isValid(id) || !_.isBoolean(completeness)) {
+            return {
+                status: constants.HTTP_STATUS_CODES.BAD_REQUEST,
+                body: 'Bad request'
+            }
+        }
+
+        try {
+            const result = await this.__todoDb.updateOneTodo(id, completeness)
+            
+            if ( result.matchedCount === 1 && result.modifiedCount === 1) {
+                return {
+                    status: constants.HTTP_STATUS_CODES.OK,
+                    body: 'Successfully Updated'
+                }
+            } else if ( result.matchedCount === 1 && result.modifiedCount === 0) {
+                return {
+                    status: constants.HTTP_STATUS_CODES.OK,
+                    body: 'Request no right content'
+                }
+            } else {
+                return {
+                    status: constants.HTTP_STATUS_CODES.NOT_FOUND,
+                    body: 'Not Found'
+                }
+            }
+            
+        } catch (e) {
+            console.error(e.message)
             return {
                 status: constants.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
                 body: 'Internal Server Error'
