@@ -1,42 +1,45 @@
 // import logo from './logo.svg';
 import React, { Component } from 'react';
 import './App.css';
-// import _JSXStyle from 'styled-jsx/style';
 import TodoItem from './modules/TodoItem';
+import axios from 'axios';
+
+const dataServer = 'http://localhost:8032';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todo_list: [
-        {
-          id: '1',
-          isComplete: false,
-          created_time: '2020-11-27 10:00:00',
-          content: 'Learn React JS09 with more examples',
-        },
-        {
-          id: '2',
-          isComplete: false,
-          created_time: '2020-11-27 10:00:00',
-          content: 'Learn React JS11 with more examples',
-        },
-        {
-          id: '3',
-          isComplete: true,
-          created_time: '2020-11-27 10:00:00',
-          content: 'Learn React JS31 with more examples',
-        },
-      ],
+      todosObjArray: [],
     };
+  }
+
+  async loadData() {
+    const res = await axios.get(`${dataServer}/todos`);
+    if (res.status === 200) {
+      if (!res.data) {
+        return;
+      }
+      this.state.todosObjArray = res.data;
+      console.log(res.data);
+    }
+  }
+
+  async componentDidMount() {
+    await this.loadData();
+    this.setState(this.state.todosObjArray);
   }
 
   render() {
     return (
       <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
         <div className="todoitems">
-          {this.state.todo_list.map((todo) => (
-            <TodoItem key={todo.id} content={todo.content} isComplete={todo.isComplete}/>
+          {this.state.todosObjArray.map((todo) => (
+            <TodoItem
+              key={todo._id}
+              content={todo.content}
+              isComplete={todo.completed}
+            />
           ))}
         </div>
         {/* <style jsx>{`
