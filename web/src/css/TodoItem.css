@@ -1,0 +1,27 @@
+.todoitem {
+    display: flex;
+    flex-direction: row;
+    /* color: aqua; */
+
+    background-color: 'rgba(0, 0, 0, 0.4)';
+       flex-direction: row;
+         display: flex;
+         justify-content: space-between;
+         width: 80%;
+         float: left;
+         margin: 2% 2% 1px 2%;
+         font-size: 1.1em;
+         font-weight: 500;
+         
+         height: 60px;
+         background: var(--white);
+         /* color: #AD0044; */
+         box-shadow: 5px 11px 45px -12px rgba(0, 0, 0, 1);
+         margin-left: 3%;
+         margin-right: 3%;
+         margin-top: 15px;
+
+         overflow: hidden;
+         font-family: sans-serif;
+
+}
