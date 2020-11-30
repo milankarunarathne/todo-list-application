@@ -30,6 +30,16 @@ class App extends Component {
     this.setState(this.state.todosObjArray);
   }
 
+  // async componentWillUpdate() {
+
+  // }
+
+  async updateTodoState(id, completed) {
+    axios.patch(`${dataServer}/todos/update/${id}`, {
+      completed: completed,
+    });
+  }
+
   render() {
     return (
       <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
@@ -37,8 +47,10 @@ class App extends Component {
           {this.state.todosObjArray.map((todo) => (
             <TodoItem
               key={todo._id}
-              content={todo.content}
-              isComplete={todo.completed}
+              data={todo}
+              updateTodoState={(id, completed) =>
+                this.updateTodoState(id, completed)
+              }
             />
           ))}
         </div>
