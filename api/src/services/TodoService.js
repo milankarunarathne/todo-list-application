@@ -18,11 +18,13 @@ class TodoService {
 
         try {
 
-            await this.__todoDb.saveSingleTodo(todo)
+            const result = await this.__todoDb.saveSingleTodo(todo)
+
+            
 
             return {
                 status: constants.HTTP_STATUS_CODES.OK,
-                body: 'Successfully Inserted'
+                body: _.get(result, 'ops', '')
             }
 
         } catch (e) {

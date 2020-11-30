@@ -11,7 +11,7 @@ class TodoDb {
         try {
             const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
                 .insertOne (todo)
-
+            
             if ( result ) {
                 return result
             }
