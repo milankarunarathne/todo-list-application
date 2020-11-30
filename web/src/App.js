@@ -36,7 +36,6 @@ class App extends Component {
     }
   }
 
-
   async updateTodoState(id, completed) {
     axios.patch(`${dataServer}/todos/update/${id}`, {
       completed: completed,
@@ -44,7 +43,6 @@ class App extends Component {
   }
 
   async createNewTodo (newTodoContent) {
-    console.log('created new todo');
     const created_time = new Date().toLocaleString();
     const newTodoObj = {
       completed: false,
@@ -53,10 +51,11 @@ class App extends Component {
     }
     const res = await axios.post(`${dataServer}/todos/create`, newTodoObj)
     if ( res.status === 200) {
-      
+      newTodoObj._id = res.data[0]._id;
+
     }
-    this.setState({...this.state.todosObjArray, newTodoObj});
-    console.log(...this.state.todosObjArray, newTodoObj);
+    const newTodoList = [...this.state.todosObjArray, newTodoObj];
+    this.setState({ ...this.state, todosObjArray: newTodoList});
   } 
 
   render() {
