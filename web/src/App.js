@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import React, { Component } from 'react';
 import axios from 'axios';
+import _ from 'lodash';
 import './App.css';
 import TodoItem from './modules/TodoItem';
 import NewTodoItem from './modules/NewTodoItem';
@@ -34,6 +35,19 @@ class App extends Component {
       this.state.todosObjArray = res.data;
       console.log(res.data);
     }
+  }
+
+  async removeTodo(id) {
+    const res = await axios.delete(`${dataServer}/todos/remove/${id}`)
+    if ( res.status === 200 ) {
+      const newObjArray = this.state.todosObjArray;
+       _.remove(newObjArray, {_id: id});
+      this.setState({ ...this.state, todosObjArray: newObjArray});
+    }
+  }
+  
+  async removeManyTodos(idArray) {
+    console.log('removed many todos');
   }
 
   async updateTodoState(id, completed) {
@@ -72,6 +86,8 @@ class App extends Component {
               updateTodoState={(id, completed) =>
                 this.updateTodoState(id, completed)
               }
+              removeTodo = {(id) => this.removeTodo(id)}
+              removeManyTodos = {(idArray) => this.removeManyTodos(idArray)}
             />
           ))}
         </div>

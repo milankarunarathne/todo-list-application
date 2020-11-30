@@ -15,6 +15,10 @@ class TodoItem extends Component {
     this.props.updateTodoState(id, !completed);
   }
 
+  async handleDeleteButton(id) {
+    this.props.removeTodo(id);
+  }
+
   render() {
     const { _id, content, created_time} = this.props.data;
     const completed = this.state.completed;
@@ -28,7 +32,7 @@ class TodoItem extends Component {
 
           <span><strong><p>{content}</p></strong>
           <p><small><i>{created_time}</i></small></p></span>
-          <button type="button" className="btn btn-danger">
+          <button type="button" className="btn btn-danger" onClick={() => this.handleDeleteButton(_id)}>
             Delete
           </button>
           {/* <Button variant="outline-primary" onClick={() => this.loadData()}>
