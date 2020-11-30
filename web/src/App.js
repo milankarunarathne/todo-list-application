@@ -1,8 +1,10 @@
 // import logo from './logo.svg';
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 import TodoItem from './modules/TodoItem';
-import axios from 'axios';
+import NewTodoItem from './modules/NewTodoItem';
+// import Title from './modules/Title';
 
 const dataServer = 'http://localhost:8032';
 
@@ -13,6 +15,15 @@ class App extends Component {
       todosObjArray: [],
     };
   }
+  
+  async componentDidMount() {
+    await this.loadData();
+    this.setState(this.state.todosObjArray);
+  }
+  
+    // async componentWillUpdate() {
+  
+    // }
 
   async loadData() {
     const res = await axios.get(`${dataServer}/todos`);
@@ -25,14 +36,6 @@ class App extends Component {
     }
   }
 
-  async componentDidMount() {
-    await this.loadData();
-    this.setState(this.state.todosObjArray);
-  }
-
-  // async componentWillUpdate() {
-
-  // }
 
   async updateTodoState(id, completed) {
     axios.patch(`${dataServer}/todos/update/${id}`, {
@@ -40,9 +43,28 @@ class App extends Component {
     });
   }
 
+  async createNewTodo (newTodoContent) {
+    console.log('created new todo');
+    const created_time = new Date().toLocaleString();
+    const newTodoObj = {
+      completed: false,
+      content: newTodoContent,
+      created_time: created_time
+    }
+    const res = await axios.post(`${dataServer}/todos/create`, newTodoObj)
+    if ( res.status === 200) {
+      
+    }
+    this.setState({...this.state.todosObjArray, newTodoObj});
+    console.log(...this.state.todosObjArray, newTodoObj);
+  } 
+
   render() {
     return (
       <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+        {/* <div className="titlebar"> */}
+                    {/* <Title  style={{ position: 'fixed', top: 0, left: 0, width: '90%' }} /> */}
+                {/* </div> */}
         <div className="todoitems">
           {this.state.todosObjArray.map((todo) => (
             <TodoItem
@@ -54,6 +76,7 @@ class App extends Component {
             />
           ))}
         </div>
+        
         {/* <style jsx>{`
           .App {
             font-family: sans-serif;
@@ -63,7 +86,13 @@ class App extends Component {
             flex-direction: column;
             color: blue;
           }
+
         `}</style> */}
+      
+        <div className="newtodoitem">
+              <NewTodoItem  createNewTodo={(newtodo) => this.createNewTodo(newtodo)} />
+        </div>
+      
       </div>
     );
   }
