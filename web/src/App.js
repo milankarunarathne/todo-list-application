@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import React, { Component } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
@@ -6,7 +5,7 @@ import './App.css';
 import TodoItem from './modules/TodoItem';
 import NewTodoItem from './modules/NewTodoItem';
 import SearchTodo from './modules/SearchTodo';
-// import Title from './modules/Title';
+import Title from './modules/Title';
 
 const dataServer = 'http://localhost:8032';
 
@@ -87,14 +86,33 @@ class App extends Component {
     }
   }
 
+  async searchTodos(search) {
+    console.log('searched result');
+    console.log(search);
+    const res = await axios.get(`${dataServer}/todos/search?content=${search}`);
+    if (res.status === 200 && res.data) {
+      console.log('prev >>> ', this.state.todoList);
+      this.setState({...this.state, todoList: res.data});
+      console.log('now <<< ', { ...this.state, todoList: res.data });
+    }
+  }
+
   render() {
+
     return (
 
       <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-        <SearchTodo/ >
-        {/* <div className="titlebar"> */}
+         <div className="titlebar">
+          <Title/>
+         </div>
+         
         {/* <Title  style={{ position: 'fixed', top: 0, left: 0, width: '90%' }} /> */}
         {/* </div> */}
+        <div className="searchtododiv">
+          <SearchTodo searchTodos={(search) => this.searchTodos(search)} />
+        </div>
+        
+       <div className="topboader"></div>
         <div className="todoitems">
           {this.state.todoList.map((todo) => (
             <TodoItem

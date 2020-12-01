@@ -17,11 +17,15 @@
          background: var(--white);
          /* color: #AD0044; */
          box-shadow: 5px 11px 45px -12px rgba(0, 0, 0, 1);
-         margin-left: 3%;
+         margin-left: 10%;
          margin-right: 3%;
          margin-top: 15px;
 
          overflow: hidden;
          font-family: sans-serif;
 
+}
+
+.topboader{
+  padding-top: 140px;
 }

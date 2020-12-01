@@ -1,0 +1,6 @@
+.navbar { 
+    position: relative;  
+    overflow: none; 
+    z-index: 1;
+    font-family: sans-serif;
+}

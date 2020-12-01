@@ -40,7 +40,7 @@ class TodoDb {
     async getSearchedTodos (content) {
 
         const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
-            .find({content: { $regex: content }}).toArray()
+            .find({content: { $regex: new RegExp(content, "i")  }}, "i").toArray()
 
         if (_.size(result) > 0 ) {
             return result;
