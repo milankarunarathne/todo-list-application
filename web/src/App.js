@@ -13,71 +13,77 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todosObjArray: [],
+      todoList: [],
     };
   }
 
   async componentDidMount() {
-    await this.loadData();
+    const todoList = await this.loadData();
+    this.setState({...this.state, todoList});
   }
 
   async loadData() {
     const res = await axios.get(`${dataServer}/todos`);
-    if (res.status === 200) {
-      if (!res.data) {
-        return;
-      }
-      this.setState({...this.state, todosObjArray : res.data});
+    if (res.status === 200 && res.data) {
+        return res.data;
     }
+    return [];
   }
 
   async removeTodo(id) {
     const res = await axios.delete(`${dataServer}/todos/remove/${id}`);
     if (res.status === 200) {
-      const newObjArray = this.state.todosObjArray;
-      _.remove(newObjArray, { _id: id });
-      this.setState({ ...this.state, todosObjArray: newObjArray });
+      const index = this.state.todoList.findIndex(element => element._id === id);
+      const todoList = [...this.state.todoList.slice(0, index), ...this.state.todoList.slice(index+1)]
+      console.log('prev >>> ', this.state);
+      this.setState({ ...this.state, todoList });
+      console.log('now <<< ', { ...this.state, todoList });
     }
   }
 
   async removeManyTodos() {
-    let newArray = this.state.todosObjArray;
-    let idArray = _.remove(newArray, { completed: true })
-    if (!_.isEmpty(idArray)){
-      idArray = _.map(idArray, '_id');  
-      const res = await axios.delete(`${dataServer}/todos/removemany`, { data: { idArray: idArray}})
+    let newArray = this.state.todoList;
+    let idArray = _.remove(newArray, { completed: true });
+    if (!_.isEmpty(idArray)) {
+      idArray = _.map(idArray, '_id');
+      const res = await axios.delete(`${dataServer}/todos/removemany`, {
+        data: { idArray: idArray },
+      });
       if (res.status === 200) {
-        this.setState ({...this.state, todosObjArray: newArray});
+        console.log('prev >>> ', this.state.todoList);
+        this.setState({ ...this.state, todoList: newArray });
+        console.log('now <<< ', { ...this.state, todoList: newArray });
       }
     }
-  }
+  } 
 
   async updateTodoState(id, completed) {
     const res = await axios.patch(`${dataServer}/todos/update/${id}`, {
       completed: !completed,
     });
-  
-    if ( res.status === 200 ) {
-      const elementIndex = this.state.todosObjArray.findIndex(element => element._id === id)
-      const newArray = this.state.todosObjArray;
-      newArray[elementIndex] = {...newArray[elementIndex], completed: !completed};
-      this.setState({...this.state.todosObjArray, newArray});
+    if (res.status === 200) {
+      const index = this.state.todoList.findIndex((element) => element._id === id);
+      const todoList = this.state.todoList;
+      todoList[index] = {...todoList[index], completed: !completed,};
+      this.setState({ ...this.state, todoList: todoList });
+      console.log('now <<< ', { ...this.state, todoList });
     }
   }
 
   async createNewTodo(newTodoContent) {
     const created_time = new Date().toLocaleString();
-    const newTodoObj = {
+    const newTodo = {
       completed: false,
       content: newTodoContent,
       created_time: created_time,
     };
-    const res = await axios.post(`${dataServer}/todos/create`, newTodoObj);
+    const res = await axios.post(`${dataServer}/todos/create`, newTodo);
     if (res.status === 200) {
-      newTodoObj._id = res.data[0]._id;
+      const todoList = [...this.state.todoList, ...res.data];
+      console.log('prev >>> ', this.state);
+      this.setState({ ...this.state, todoList: todoList });
+      console.log('now <<< ', { ...this.state, todoList });
     }
-    const newTodoList = [...this.state.todosObjArray, newTodoObj];
-    this.setState({ ...this.state, todosObjArray: newTodoList });
   }
 
   render() {
@@ -87,7 +93,7 @@ class App extends Component {
         {/* <Title  style={{ position: 'fixed', top: 0, left: 0, width: '90%' }} /> */}
         {/* </div> */}
         <div className="todoitems">
-          {this.state.todosObjArray.map((todo) => (
+          {this.state.todoList.map((todo) => (
             <TodoItem
               key={todo._id}
               data={todo}
