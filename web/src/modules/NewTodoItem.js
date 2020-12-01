@@ -42,10 +42,10 @@ class NewTodoItem extends Component {
         {/* <span><strong><p>{content}</p></strong> */}
         <div className="input-group-prepend">
           <div className="input-group-text" id="basic-addon1">
-            New Todo
+            <p style={{ width : '100px', margin: "20px", fontSize: '1.2em', fontWeight: '600' }}>New Todo</p>
           </div>
         </div>
-        <input
+        <input style={{ height: "auto" }}
           type="text"
           className="form-control"
           placeholder="Enter new Todo"

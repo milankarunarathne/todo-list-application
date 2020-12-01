@@ -5,6 +5,7 @@ import _ from 'lodash';
 import './App.css';
 import TodoItem from './modules/TodoItem';
 import NewTodoItem from './modules/NewTodoItem';
+import SearchTodo from './modules/SearchTodo';
 // import Title from './modules/Title';
 
 const dataServer = 'http://localhost:8032';
@@ -88,7 +89,9 @@ class App extends Component {
 
   render() {
     return (
+
       <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+        <SearchTodo/ >
         {/* <div className="titlebar"> */}
         {/* <Title  style={{ position: 'fixed', top: 0, left: 0, width: '90%' }} /> */}
         {/* </div> */}
