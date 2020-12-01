@@ -1,3 +1,4 @@
+const { times } = require('lodash')
 const _ = require('lodash')
 const { ObjectID } = require('mongodb')
 const constants = require('../constants')
@@ -34,6 +35,17 @@ class TodoDb {
         }
         return []
 
+    }
+
+    async getSearchedTodos (content) {
+
+        const result = await this.__dbConn.collection(constants.COLLECTION_NAMES.TODO)
+            .find({content: { $regex: content }}).toArray()
+
+        if (_.size(result) > 0 ) {
+            return result;
+        }
+        return []
     }
 
     async deleteOneTodo(id) {

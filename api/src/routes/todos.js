@@ -15,6 +15,12 @@ router.get('', async (req, res) => {
     res.status(result.status).send(result.body)
 })
 
+router.get('/search', async (req, res) => {
+    const todoService = new TodoService(req.app.locals.db)
+    const result = await todoService.retriveMatchingTodos(req.query.content)
+    res.status(result.status).send(result.body)
+})
+
 router.patch('/update/:todoId', async (req, res) => {
     const todoService = new TodoService(req.app.locals.db)
     const result = await todoService.updateCompletenessOfOneTodo(req.params.todoId, req.body.completed)
