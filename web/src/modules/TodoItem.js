@@ -11,8 +11,8 @@ class TodoItem extends Component {
   }
 
   async handleRadioButtonClick(id, completed) {
-    // this.setState({...this.state, completed : !completed });
-    this.props.updateTodoState(id, !completed);
+    // console.log(completed);
+    this.props.updateTodoState(id, completed);
   }
 
   async handleDeleteButton(id) {
@@ -20,8 +20,7 @@ class TodoItem extends Component {
   }
 
   render() {
-    const { _id, content, created_time} = this.props.data;
-    const completed = this.state.completed;
+    const { _id, content, created_time, completed} = this.props.data;
     
     return (
       <div>

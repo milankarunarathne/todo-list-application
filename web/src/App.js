@@ -19,12 +19,7 @@ class App extends Component {
 
   async componentDidMount() {
     await this.loadData();
-    // this.setState(...this.state.todosObjArray: );
   }
-
-  // async componentWillUpdate() {
-
-  // }
 
   async loadData() {
     const res = await axios.get(`${dataServer}/todos`);
@@ -32,11 +27,7 @@ class App extends Component {
       if (!res.data) {
         return;
       }
-
-      console.log(res.data);
-      this.setState({...this.state, todosObjArray : res.data})
-      // this.state.todosObjArray = res.data;
-      console.log(...this.state.todosObjArray);
+      this.setState({...this.state, todosObjArray : res.data});
     }
   }
 
@@ -45,45 +36,32 @@ class App extends Component {
     if (res.status === 200) {
       const newObjArray = this.state.todosObjArray;
       _.remove(newObjArray, { _id: id });
-      this.setState({ ...this.state, todosObjArray: [newObjArray] });
+      this.setState({ ...this.state, todosObjArray: newObjArray });
     }
   }
 
   async removeManyTodos() {
-    console.log('removed many todos');
     let newArray = this.state.todosObjArray;
-    console.log(newArray);
-    const wilremove = _.remove(newArray, { completed: false })
-    console.log(wilremove);
-    console.log(newArray);
-
-    newArray = _.map(newArray, '_id');
-    console.log(newArray);
-    const teere = { 'idArray': newArray}
-
-    const res = await axios.delete(`${dataServer}/todos/removemany`, { data: { idArray: newArray}})
-    if (res.status === 200) {
-      console.log(res);
+    let idArray = _.remove(newArray, { completed: true })
+    if (!_.isEmpty(idArray)){
+      idArray = _.map(idArray, '_id');  
+      const res = await axios.delete(`${dataServer}/todos/removemany`, { data: { idArray: idArray}})
+      if (res.status === 200) {
+        this.setState ({...this.state, todosObjArray: newArray});
+      }
     }
-
   }
 
   async updateTodoState(id, completed) {
-    console.log(completed);
     const res = await axios.patch(`${dataServer}/todos/update/${id}`, {
-      completed: completed,
+      completed: !completed,
     });
-    console.log(res.status);
+  
     if ( res.status === 200 ) {
       const elementIndex = this.state.todosObjArray.findIndex(element => element._id === id)
-      console.log(elementIndex);
-      let newArray = [...this.state.todosObjArray];
-      newArray[elementIndex] = {...newArray[elementIndex], completed: !newArray[elementIndex].completed};
-            // newArray[]
-      console.log(this.state.todosObjArray);
-      console.log(newArray);
-      this.setState({...this.state, todosObjArray: newArray});
-      
+      const newArray = this.state.todosObjArray;
+      newArray[elementIndex] = {...newArray[elementIndex], completed: !completed};
+      this.setState({...this.state.todosObjArray, newArray});
     }
   }
 
