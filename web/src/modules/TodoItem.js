@@ -7,11 +7,11 @@ import RadioButtonCheck from './RadioButtonCheck';
 class TodoItem extends Component {
   constructor(props) {
     super(props);
-    this.state = {completed: props.data.completed};
+    this.state = {completed: this.props.data.completed};
   }
 
   async handleRadioButtonClick(id, completed) {
-    this.setState({ completed : !completed });
+    // this.setState({...this.state, completed : !completed });
     this.props.updateTodoState(id, !completed);
   }
 

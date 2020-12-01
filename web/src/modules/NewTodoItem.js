@@ -22,6 +22,10 @@ class NewTodoItem extends Component {
     this.setState({ textInput: ''});
   }
 
+  async handleDeleteCompletedTodosButtonClick() {
+    this.props.removeManyTodos()
+  }
+
   render() {
     // const { _id, content, created_time} = this.props.data;
     // const completed = this.state.completed;
@@ -59,7 +63,7 @@ class NewTodoItem extends Component {
         {/* <Button variant="outline-primary" onClick={() => this.loadData()}>
             Refresh
           </Button> */}
-          <button type="button" className="btn btn-danger">
+          <button type="button" className="btn btn-danger" onClick={() => this.handleDeleteCompletedTodosButtonClick()}>
           Delete All completed
         </button>
       </div>
