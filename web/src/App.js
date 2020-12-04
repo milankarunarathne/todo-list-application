@@ -19,13 +19,13 @@ class App extends Component {
 
   async componentDidMount() {
     const todoList = await this.loadData();
-    this.setState({...this.state, todoList});
+    this.setState({ ...this.state, todoList });
   }
 
   async loadData() {
     const res = await axios.get(`${dataServer}/todos`);
     if (res.status === 200 && res.data) {
-        return res.data;
+      return res.data;
     }
     return [];
   }
@@ -33,8 +33,13 @@ class App extends Component {
   async removeTodo(id) {
     const res = await axios.delete(`${dataServer}/todos/remove/${id}`);
     if (res.status === 200) {
-      const index = this.state.todoList.findIndex(element => element._id === id);
-      const todoList = [...this.state.todoList.slice(0, index), ...this.state.todoList.slice(index+1)]
+      const index = this.state.todoList.findIndex(
+        (element) => element._id === id
+      );
+      const todoList = [
+        ...this.state.todoList.slice(0, index),
+        ...this.state.todoList.slice(index + 1),
+      ];
       console.log('prev >>> ', this.state);
       this.setState({ ...this.state, todoList });
       console.log('now <<< ', { ...this.state, todoList });
@@ -55,16 +60,18 @@ class App extends Component {
         console.log('now <<< ', { ...this.state, todoList: newArray });
       }
     }
-  } 
+  }
 
   async updateTodoState(id, completed) {
     const res = await axios.patch(`${dataServer}/todos/update/${id}`, {
       completed: !completed,
     });
     if (res.status === 200) {
-      const index = this.state.todoList.findIndex((element) => element._id === id);
+      const index = this.state.todoList.findIndex(
+        (element) => element._id === id
+      );
       const todoList = this.state.todoList;
-      todoList[index] = {...todoList[index], completed: !completed,};
+      todoList[index] = { ...todoList[index], completed: !completed };
       this.setState({ ...this.state, todoList: todoList });
       console.log('now <<< ', { ...this.state, todoList });
     }
@@ -92,52 +99,30 @@ class App extends Component {
     const res = await axios.get(`${dataServer}/todos/search?content=${search}`);
     if (res.status === 200 && res.data) {
       console.log('prev >>> ', this.state.todoList);
-      this.setState({...this.state, todoList: res.data});
+      this.setState({ ...this.state, todoList: res.data });
       console.log('now <<< ', { ...this.state, todoList: res.data });
     }
   }
 
   render() {
-
     return (
-
-      <div className="App" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-         <div className="titlebar">
-          <Title/>
-         </div>
-         
-        {/* <Title  style={{ position: 'fixed', top: 0, left: 0, width: '90%' }} /> */}
-        {/* </div> */}
+      <div className="App">
+        <div className="titlebar">
+          <Title />
+        </div>
         <div className="searchtododiv">
           <SearchTodo searchTodos={(search) => this.searchTodos(search)} />
         </div>
-        
-       <div className="topboader"></div>
+        <div className="topboader"></div>
         <div className="todoitems">
           {this.state.todoList.map((todo) => (
             <TodoItem
-              key={todo._id}
-              data={todo}
-              updateTodoState={(id, completed) =>
-                this.updateTodoState(id, completed)
-              }
+              key={todo._id} data={todo}
+              updateTodoState={(id, completed) => this.updateTodoState(id, completed)}
               removeTodo={(id) => this.removeTodo(id)}
             />
           ))}
         </div>
-
-        {/* <style jsx>{`
-          .App {
-            font-family: sans-serif;
-          }
-
-          .todoitems {
-            flex-direction: column;
-            color: blue;
-          }
-
-        `}</style> */}
-
         <div className="newtodoitem">
           <NewTodoItem
             createNewTodo={(newtodo) => this.createNewTodo(newtodo)}

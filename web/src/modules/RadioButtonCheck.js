@@ -1,6 +1,6 @@
 import { MdRadioButtonUnchecked, MdRadioButtonChecked } from 'react-icons/md';
 
-const RadioButtonCheck = ( {completed} ) => {
+const RadioButtonCheck = ({ completed }) => {
   return completed ? (
     <MdRadioButtonChecked size="50px" style={{ margin: '6px' }} />
   ) : (

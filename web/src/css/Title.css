@@ -1,6 +1,22 @@
-.navbar { 
-    position: relative;  
-    overflow: none; 
-    z-index: 1;
-    font-family: sans-serif;
+.navbar {
+  position: fixed;
+  overflow: none;
+  z-index: 1;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: row;
+  padding: 10;
+  height: 180px;
+  background-color: rgba(36, 63, 23, 1);
+  width: 90%;
+  flex-direction: row;
+  margin-left: 5%;
 }
+
+.title {
+  color: white;
+  font-size: 60px;
+  padding-left: 40%;
+}
+
+/* fontSize: '60px', paddingLeft: '40%' */
