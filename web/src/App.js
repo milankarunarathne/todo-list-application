@@ -8,20 +8,23 @@ import SearchTodo from './modules/SearchTodo';
 import Title from './modules/Title';
 import { connect } from 'react-redux';
 import { fetchTodos } from './actions/loadTodoListActions';
+import imageOnLoading from './loadingImg.gif';
+import imageOnError from './errorImg.gif';
 
 const dataServer = 'http://localhost:8032';
 
 class App extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     todoList: [],
-  //   };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      errorMessage: undefined,
+      isFetching: undefined,
+      todoList: [],
+    };
+  }
 
   async componentDidMount() {
-    const todoList = await this.loadData();
-    this.setState({ ...this.state, todoList });
+    await this.props.fetchTodos();
   }
 
   async loadData() {
@@ -107,17 +110,33 @@ class App extends Component {
   }
 
   render() {
+    const { errorMessage, isFetching, todoList } = this.props;
+    if (errorMessage) {
+      return (
+        <div>
+          <p className="errorMessage"> {errorMessage}</p>
+          <img src={imageOnError} alt="errorImg" className="errorOnLoading" />
+        </div>
+      );
+    }
+
+    if (isFetching) {
+      return (
+        <img src={imageOnLoading} alt="loadingImg" className="initialLaoding" />
+      );
+    }
+
     return (
       <div className="App">
         <div className="titlebar">
           <Title />
         </div>
-        <div className="searchtododiv">
+        {/* <div className="searchtododiv">
           <SearchTodo searchTodos={(search) => this.searchTodos(search)} />
-        </div>
+        </div> */}
         <div className="topboader"></div>
         <div className="todoitems">
-          {this.state.todoList.map((todo) => (
+          {todoList.map((todo) => (
             <TodoItem
               key={todo._id}
               data={todo}
@@ -128,15 +147,29 @@ class App extends Component {
             />
           ))}
         </div>
-        <div className="newtodoitem">
+        {/* <div className="newtodoitem">
           <NewTodoItem
             createNewTodo={(newtodo) => this.createNewTodo(newtodo)}
             removeManyTodos={() => this.removeManyTodos()}
           />
-        </div>
+        </div> */}
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  errorMessage: state.todoListReducer.errorMessage,
+  isFetching: state.todoListReducer.isFetching,
+  todoList: state.todoListReducer.todoList,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTodos: () => {
+      dispatch(fetchTodos());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

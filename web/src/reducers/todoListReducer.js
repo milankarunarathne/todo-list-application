@@ -16,15 +16,15 @@ const todoListReducer = (state = INITIAL_STATE, action) => {
     case FetchTodosActionTypes.FETCH_TODOS_SUCCESS:
       return {
         ...state,
-        todoList: action.payload.todos,
+        todoList: action.payload,
         isFetching: false,
       };
     case FetchTodosActionTypes.FETCH_TODOS_FAILURE:
       return {
         ...state,
         isFetching: false,
-        errorMessage: action.payload.error,
-        todoList: []
+        errorMessage: action.payload,
+        todoList: [],
       };
     default:
       return state;

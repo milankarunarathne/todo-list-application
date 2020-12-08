@@ -41,6 +41,33 @@
 .todoitems {
   display: flex;
   flex-direction: column;
-  /* color: blue; */
-  /* width: 5px; */
+}
+
+.initialLaoding {
+  width: 100px;
+  height: auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+}
+
+.errorOnLoading {
+  width: 100px;
+  height: auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -50px;
+  margin-top: -50px;
+}
+
+.errorMessage {
+  position: absolute;
+  font-size: 2em;
+  left: 50%;
+  top: 45%;
+  margin-left: -90px;
+  margin-top: -50px;
 }
