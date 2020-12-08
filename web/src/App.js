@@ -6,16 +6,18 @@ import TodoItem from './modules/TodoItem';
 import NewTodoItem from './modules/NewTodoItem';
 import SearchTodo from './modules/SearchTodo';
 import Title from './modules/Title';
+import { connect } from 'react-redux';
+import { fetchTodos } from './actions/loadTodoListActions';
 
 const dataServer = 'http://localhost:8032';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todoList: [],
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     todoList: [],
+  //   };
+  // }
 
   async componentDidMount() {
     const todoList = await this.loadData();
@@ -117,8 +119,11 @@ class App extends Component {
         <div className="todoitems">
           {this.state.todoList.map((todo) => (
             <TodoItem
-              key={todo._id} data={todo}
-              updateTodoState={(id, completed) => this.updateTodoState(id, completed)}
+              key={todo._id}
+              data={todo}
+              updateTodoState={(id, completed) =>
+                this.updateTodoState(id, completed)
+              }
               removeTodo={(id) => this.removeTodo(id)}
             />
           ))}
