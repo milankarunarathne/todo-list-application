@@ -8,6 +8,7 @@ import SearchTodo from './modules/SearchTodo';
 import Title from './modules/Title';
 import { connect } from 'react-redux';
 import { fetchTodos } from './actions/loadTodoListActions';
+import { updateTodoState } from './actions/todoActions';
 import imageOnLoading from './loadingImg.gif';
 import imageOnError from './errorImg.gif';
 
@@ -64,21 +65,6 @@ class App extends Component {
         this.setState({ ...this.state, todoList: newArray });
         console.log('now <<< ', { ...this.state, todoList: newArray });
       }
-    }
-  }
-
-  async updateTodoState(id, completed) {
-    const res = await axios.patch(`${dataServer}/todos/update/${id}`, {
-      completed: !completed,
-    });
-    if (res.status === 200) {
-      const index = this.state.todoList.findIndex(
-        (element) => element._id === id
-      );
-      const todoList = this.state.todoList;
-      todoList[index] = { ...todoList[index], completed: !completed };
-      this.setState({ ...this.state, todoList: todoList });
-      console.log('now <<< ', { ...this.state, todoList });
     }
   }
 
@@ -141,7 +127,7 @@ class App extends Component {
               key={todo._id}
               data={todo}
               updateTodoState={(id, completed) =>
-                this.updateTodoState(id, completed)
+                this.props.updateTodoState(id, completed)
               }
               removeTodo={(id) => this.removeTodo(id)}
             />
@@ -168,6 +154,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchTodos: () => {
       dispatch(fetchTodos());
+    },
+    updateTodoState: (id, completed) => {
+      dispatch(updateTodoState(id, completed));
     },
   };
 };

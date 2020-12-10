@@ -1,4 +1,7 @@
-import { FetchTodosActionTypes } from '../constants/actionTypes';
+import {
+  FetchTodosActionTypes,
+  UpdateIsCompleteTodoActionTypes,
+} from '../constants/actionTypes';
 
 const INITIAL_STATE = {
   todoList: [],
@@ -25,6 +28,24 @@ const todoListReducer = (state = INITIAL_STATE, action) => {
         isFetching: false,
         errorMessage: action.payload,
         todoList: [],
+      };
+    case UpdateIsCompleteTodoActionTypes.UPDATE_TODO_SUCCESS:
+      return {
+        ...state,
+        todoList: state.todoList.map((todo) => {
+          if (todo._id !== action.payload.id) {
+            return todo;
+          }
+          return {
+            ...todo,
+            completed: !todo.completed,
+          };
+        }),
+      };
+    case UpdateIsCompleteTodoActionTypes.UPDATE_TODO_FAILURE:
+      return {
+        ...state,
+        errorMessage: action.payload.errorMessage,
       };
     default:
       return state;

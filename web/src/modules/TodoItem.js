@@ -22,14 +22,27 @@ class TodoItem extends Component {
     return (
       <div>
         <div className="todoitem">
-          <div className="todoCompleteButton" onClick={() => this.handleRadioButtonClick(_id, completed)}>
+          <div
+            className="todoCompleteButton"
+            onClick={() => this.props.updateTodoState(_id, completed)}
+          >
             <RadioButtonCheck completed={completed} />
           </div>
           <span>
-            <p><strong>{content}</strong></p>
-            <p><small><i>{created_time}</i></small></p>
+            <p>
+              <strong>{content}</strong>
+            </p>
+            <p>
+              <small>
+                <i>{created_time}</i>
+              </small>
+            </p>
           </span>
-          <button type="button" className="btn btn-danger" onClick={() => this.handleDeleteButton(_id)}>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => this.handleDeleteButton(_id)}
+          >
             Delete
           </button>
         </div>
