@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { UpdateIsCompleteTodoActionTypes } from '../constants/actionTypes';
+import {
+  UpdateIsCompleteTodoActionTypes,
+  DeleteOneTodoActionTypes,
+} from '../constants/actionTypes';
 
 const dataServer = 'http://localhost:8032';
 
@@ -24,6 +27,33 @@ export const updateTodoState = (id, completed) => {
         return response;
       })
       .catch((error) => dispatch(updateIsCompleteActionFailure(error)));
+  };
+};
+
+export const deleteOneTodoActionSuccess = (id) => (
+  console.log('this is reached'),
+  {
+    type: DeleteOneTodoActionTypes.DELETE_TODO_SUCCESS,
+    payload: { id: id },
+  }
+);
+
+export const deleteOneTodoActionFailure = (error) => ({
+  type: DeleteOneTodoActionTypes.DELETE_TODO_FAILURE,
+  payload: { errorMessage: error.message },
+});
+
+export const removeOneTodo = (id) => {
+  const url = `${dataServer}/todos/remove/${id}`;
+  return (dispatch) => {
+    axios
+      .delete(url)
+      .then((response) => handleErros(response))
+      .then((response) => {
+        dispatch(deleteOneTodoActionSuccess(id));
+        return response;
+      })
+      .catch((error) => dispatch(deleteOneTodoActionFailure(error)));
   };
 };
 
