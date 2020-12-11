@@ -2,6 +2,7 @@ import {
   FetchTodosActionTypes,
   UpdateIsCompleteTodoActionTypes,
   DeleteOneTodoActionTypes,
+  CreateNewTodoActionTypes,
 } from '../constants/actionTypes';
 
 const INITIAL_STATE = {
@@ -56,6 +57,16 @@ const todoListReducer = (state = INITIAL_STATE, action) => {
         ),
       };
     case DeleteOneTodoActionTypes.DELETE_TODO_FAILURE:
+      return {
+        ...state,
+        errorMessage: action.payload.errorMessage,
+      };
+    case CreateNewTodoActionTypes.CREATE_TODO_SUCCESS:
+      return {
+        ...state,
+        todoList: [...state.todoList, action.payload],
+      };
+    case CreateNewTodoActionTypes.CREATE_TODO_FAILURE:
       return {
         ...state,
         errorMessage: action.payload.errorMessage,

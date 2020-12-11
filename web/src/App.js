@@ -9,6 +9,7 @@ import Title from './modules/Title';
 import { connect } from 'react-redux';
 import { fetchTodos } from './actions/loadTodoListActions';
 import { updateTodoState, removeOneTodo } from './actions/todoActions';
+import { createNewTodo } from './actions/newTodoActions';
 import imageOnLoading from './loadingImg.gif';
 import imageOnError from './errorImg.gif';
 
@@ -28,14 +29,6 @@ class App extends Component {
     await this.props.fetchTodos();
   }
 
-  async loadData() {
-    const res = await axios.get(`${dataServer}/todos`);
-    if (res.status === 200 && res.data) {
-      return res.data;
-    }
-    return [];
-  }
-
   async removeManyTodos() {
     let newArray = this.state.todoList;
     let idArray = _.remove(newArray, { completed: true });
@@ -49,22 +42,6 @@ class App extends Component {
         this.setState({ ...this.state, todoList: newArray });
         console.log('now <<< ', { ...this.state, todoList: newArray });
       }
-    }
-  }
-
-  async createNewTodo(newTodoContent) {
-    const created_time = new Date().toLocaleString();
-    const newTodo = {
-      completed: false,
-      content: newTodoContent,
-      created_time: created_time,
-    };
-    const res = await axios.post(`${dataServer}/todos/create`, newTodo);
-    if (res.status === 200) {
-      const todoList = [...this.state.todoList, ...res.data];
-      console.log('prev >>> ', this.state);
-      this.setState({ ...this.state, todoList: todoList });
-      console.log('now <<< ', { ...this.state, todoList });
     }
   }
 
@@ -117,12 +94,12 @@ class App extends Component {
             />
           ))}
         </div>
-        {/* <div className="newtodoitem">
+        <div className="newtodoitem">
           <NewTodoItem
-            createNewTodo={(newtodo) => this.createNewTodo(newtodo)}
+            createNewTodo={(newTodoContent) => this.props.createNewTodo(newTodoContent) }
             removeManyTodos={() => this.removeManyTodos()}
           />
-        </div> */}
+        </div>
       </div>
     );
   }
@@ -144,6 +121,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeOneTodo: (id) => {
       dispatch(removeOneTodo(id));
+    },
+    createNewTodo: (newTodoContent) => {
+      dispatch(createNewTodo(newTodoContent));
     },
   };
 };
