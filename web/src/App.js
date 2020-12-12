@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { fetchTodos } from './actions/loadTodoListActions';
 import { updateTodoState, removeOneTodo } from './actions/todoActions';
 import { createNewTodo } from './actions/newTodoActions';
+import { removeCompletedTodos } from './actions/deleteManyTodosActions';
 import imageOnLoading from './loadingImg.gif';
 import imageOnError from './errorImg.gif';
 
@@ -29,19 +30,11 @@ class App extends Component {
     await this.props.fetchTodos();
   }
 
-  async removeManyTodos() {
-    let newArray = this.state.todoList;
-    let idArray = _.remove(newArray, { completed: true });
-    if (!_.isEmpty(idArray)) {
-      idArray = _.map(idArray, '_id');
-      const res = await axios.delete(`${dataServer}/todos/removemany`, {
-        data: { idArray: idArray },
-      });
-      if (res.status === 200) {
-        console.log('prev >>> ', this.state.todoList);
-        this.setState({ ...this.state, todoList: newArray });
-        console.log('now <<< ', { ...this.state, todoList: newArray });
-      }
+  async removemany() {
+    if (
+      !_.isEmpty(this.props.todoList.filter((todo) => todo.completed !== false))
+    ) {
+      this.props.removeCompletedTodos(this.props.todoList);
     }
   }
 
@@ -96,8 +89,10 @@ class App extends Component {
         </div>
         <div className="newtodoitem">
           <NewTodoItem
-            createNewTodo={(newTodoContent) => this.props.createNewTodo(newTodoContent) }
-            removeManyTodos={() => this.removeManyTodos()}
+            createNewTodo={(newTodoContent) =>
+              this.props.createNewTodo(newTodoContent)
+            }
+            removemany={() => this.removemany()}
           />
         </div>
       </div>
@@ -124,6 +119,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     createNewTodo: (newTodoContent) => {
       dispatch(createNewTodo(newTodoContent));
+    },
+    removeCompletedTodos: (todoList) => {
+      dispatch(removeCompletedTodos(todoList));
     },
   };
 };

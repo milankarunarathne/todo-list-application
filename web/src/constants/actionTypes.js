@@ -2,7 +2,7 @@
 // export const CREATE_TODO_ITEM = 'CREATE_TODO_ITEM';
 // export const UPDATE_TODO_ITEM = 'UPDATE_TODO_ITEM';
 // export const DELETE_TODO_ITEM = 'DELETE_TODO_ITEM';
-export const DELETE_MANY_TODO_ITEMS = 'DELETE_MANY_TODO_ITEMS';
+// export const DELETE_COMPLETED_TODO_ITEMS = 'DELETE_COMPLETED_TODO_ITEMS';
 export const SEARCH_TODO_ITEM = 'SEARCH_TODO_ITEM';
 
 export const FetchTodosActionTypes = {
@@ -24,4 +24,9 @@ export const DeleteOneTodoActionTypes = {
 export const CreateNewTodoActionTypes = {
   CREATE_TODO_SUCCESS: 'CREATE_TODO_SUCCESS',
   CREATE_TODO_FAILURE: 'CREATE_TODO_FAILURE',
+};
+
+export const DeleteCompletedTodosActionTypes = {
+  DELETE_COMPLETED_TODOS_SUCCESS: 'DELETE_COMPLETED_TODOS_SUCCESS',
+  DELETE_COMPLETED_TODOS_FAILURE: 'DELETE_COMPLETED_TODOS_FAILURE',
 };

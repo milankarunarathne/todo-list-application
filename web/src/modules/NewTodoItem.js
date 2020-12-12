@@ -20,6 +20,10 @@ class NewTodoItem extends Component {
     this.setState({ inputText: '' });
   };
 
+  handleDeleteCompletedTodosButtonClick = () => {
+    this.props.removemany();
+  };
+
   render() {
     return (
       <div className="newtodoinput">
@@ -45,22 +49,21 @@ class NewTodoItem extends Component {
         >
           Make Todo
         </button>
-        {/* <button
+        <button
           type="button"
           className="btn btn-danger"
           onClick={() => this.handleDeleteCompletedTodosButtonClick()}
         >
-          {' '}
-          Delete All completed{' '}
-        </button> */}
+          Delete All completed
+        </button>
       </div>
     );
   }
 }
 
-NewTodoItem.propTypes = {
-  createNewTodo: PropTypes.func,
-  removeManyTodos: PropTypes.func,
-};
+// NewTodoItem.propTypes = {
+//   createNewTodo: PropTypes.func,
+//   removeManyTodos: PropTypes.func,
+// };
 
 export default NewTodoItem;

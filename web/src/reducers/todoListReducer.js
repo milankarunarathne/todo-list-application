@@ -3,6 +3,7 @@ import {
   UpdateIsCompleteTodoActionTypes,
   DeleteOneTodoActionTypes,
   CreateNewTodoActionTypes,
+  DeleteCompletedTodosActionTypes,
 } from '../constants/actionTypes';
 
 const INITIAL_STATE = {
@@ -71,6 +72,20 @@ const todoListReducer = (state = INITIAL_STATE, action) => {
         ...state,
         errorMessage: action.payload.errorMessage,
       };
+
+    case DeleteCompletedTodosActionTypes.DELETE_COMPLETED_TODOS_SUCCESS:
+      return {
+        ...state,
+        todoList: state.todoList.filter(
+          ({ _id }) => !action.payload.includes(_id)
+        ),
+      };
+    case DeleteCompletedTodosActionTypes.DELETE_COMPLETED_TODOS_FAILURE:
+      return {
+        ...state,
+        errorMessage: action.payload.errorMessage,
+      };
+
     default:
       return state;
   }
