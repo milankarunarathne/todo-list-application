@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import './App.css';
 import TodoItem from './modules/TodoItem';
@@ -11,10 +10,9 @@ import { fetchTodos } from './actions/loadTodoListActions';
 import { updateTodoState, removeOneTodo } from './actions/todoActions';
 import { createNewTodo } from './actions/newTodoActions';
 import { removeCompletedTodos } from './actions/deleteManyTodosActions';
+import { searchTodos } from './actions/searchTodosActions';
 import imageOnLoading from './loadingImg.gif';
 import imageOnError from './errorImg.gif';
-
-const dataServer = 'http://localhost:8032';
 
 class App extends Component {
   constructor(props) {
@@ -35,17 +33,6 @@ class App extends Component {
       !_.isEmpty(this.props.todoList.filter((todo) => todo.completed !== false))
     ) {
       this.props.removeCompletedTodos(this.props.todoList);
-    }
-  }
-
-  async searchTodos(search) {
-    console.log('searched result');
-    console.log(search);
-    const res = await axios.get(`${dataServer}/todos/search?content=${search}`);
-    if (res.status === 200 && res.data) {
-      console.log('prev >>> ', this.state.todoList);
-      this.setState({ ...this.state, todoList: res.data });
-      console.log('now <<< ', { ...this.state, todoList: res.data });
     }
   }
 
@@ -71,9 +58,11 @@ class App extends Component {
         <div className="titlebar">
           <Title />
         </div>
-        {/* <div className="searchtododiv">
-          <SearchTodo searchTodos={(search) => this.searchTodos(search)} />
-        </div> */}
+        <div className="searchtododiv">
+          <SearchTodo
+            searchTodos={(search) => this.props.searchTodos(search)}
+          />
+        </div>
         <div className="topboader"></div>
         <div className="todoitems">
           {todoList.map((todo) => (
@@ -122,6 +111,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeCompletedTodos: (todoList) => {
       dispatch(removeCompletedTodos(todoList));
+    },
+    searchTodos: (search) => {
+      dispatch(searchTodos(search));
     },
   };
 };
