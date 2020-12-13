@@ -1,132 +1,87 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 import './App.css';
 import TodoItem from './modules/TodoItem';
 import NewTodoItem from './modules/NewTodoItem';
 import SearchTodo from './modules/SearchTodo';
 import Title from './modules/Title';
-
-const dataServer = 'http://localhost:8032';
+import { connect } from 'react-redux';
+import { fetchTodos } from './actions/loadTodoListActions';
+import { updateTodoState, removeOneTodo } from './actions/todoActions';
+import { createNewTodo } from './actions/newTodoActions';
+import { removeCompletedTodos } from './actions/deleteManyTodosActions';
+import { searchTodos } from './actions/searchTodosActions';
+import imageOnLoading from './loadingImg.gif';
+import imageOnError from './errorImg.gif';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMessage: undefined,
+      isFetching: undefined,
       todoList: [],
     };
   }
 
   async componentDidMount() {
-    const todoList = await this.loadData();
-    this.setState({ ...this.state, todoList });
+    await this.props.fetchTodos();
   }
 
-  async loadData() {
-    const res = await axios.get(`${dataServer}/todos`);
-    if (res.status === 200 && res.data) {
-      return res.data;
-    }
-    return [];
-  }
-
-  async removeTodo(id) {
-    const res = await axios.delete(`${dataServer}/todos/remove/${id}`);
-    if (res.status === 200) {
-      const index = this.state.todoList.findIndex(
-        (element) => element._id === id
-      );
-      const todoList = [
-        ...this.state.todoList.slice(0, index),
-        ...this.state.todoList.slice(index + 1),
-      ];
-      console.log('prev >>> ', this.state);
-      this.setState({ ...this.state, todoList });
-      console.log('now <<< ', { ...this.state, todoList });
-    }
-  }
-
-  async removeManyTodos() {
-    let newArray = this.state.todoList;
-    let idArray = _.remove(newArray, { completed: true });
-    if (!_.isEmpty(idArray)) {
-      idArray = _.map(idArray, '_id');
-      const res = await axios.delete(`${dataServer}/todos/removemany`, {
-        data: { idArray: idArray },
-      });
-      if (res.status === 200) {
-        console.log('prev >>> ', this.state.todoList);
-        this.setState({ ...this.state, todoList: newArray });
-        console.log('now <<< ', { ...this.state, todoList: newArray });
-      }
-    }
-  }
-
-  async updateTodoState(id, completed) {
-    const res = await axios.patch(`${dataServer}/todos/update/${id}`, {
-      completed: !completed,
-    });
-    if (res.status === 200) {
-      const index = this.state.todoList.findIndex(
-        (element) => element._id === id
-      );
-      const todoList = this.state.todoList;
-      todoList[index] = { ...todoList[index], completed: !completed };
-      this.setState({ ...this.state, todoList: todoList });
-      console.log('now <<< ', { ...this.state, todoList });
-    }
-  }
-
-  async createNewTodo(newTodoContent) {
-    const created_time = new Date().toLocaleString();
-    const newTodo = {
-      completed: false,
-      content: newTodoContent,
-      created_time: created_time,
-    };
-    const res = await axios.post(`${dataServer}/todos/create`, newTodo);
-    if (res.status === 200) {
-      const todoList = [...this.state.todoList, ...res.data];
-      console.log('prev >>> ', this.state);
-      this.setState({ ...this.state, todoList: todoList });
-      console.log('now <<< ', { ...this.state, todoList });
-    }
-  }
-
-  async searchTodos(search) {
-    console.log('searched result');
-    console.log(search);
-    const res = await axios.get(`${dataServer}/todos/search?content=${search}`);
-    if (res.status === 200 && res.data) {
-      console.log('prev >>> ', this.state.todoList);
-      this.setState({ ...this.state, todoList: res.data });
-      console.log('now <<< ', { ...this.state, todoList: res.data });
+  async removemany() {
+    if (
+      !_.isEmpty(this.props.todoList.filter((todo) => todo.completed !== false))
+    ) {
+      this.props.removeCompletedTodos(this.props.todoList);
     }
   }
 
   render() {
+    const { errorMessage, isFetching, todoList } = this.props;
+    if (errorMessage) {
+      return (
+        <div>
+          <p className="errorMessage"> {errorMessage}</p>
+          <img src={imageOnError} alt="errorImg" className="errorOnLoading" />
+        </div>
+      );
+    }
+
+    if (isFetching) {
+      return (
+        <img src={imageOnLoading} alt="loadingImg" className="initialLaoding" />
+      );
+    }
+
     return (
       <div className="App">
         <div className="titlebar">
           <Title />
         </div>
         <div className="searchtododiv">
-          <SearchTodo searchTodos={(search) => this.searchTodos(search)} />
+          <SearchTodo
+            searchTodos={(search) => this.props.searchTodos(search)}
+          />
         </div>
         <div className="topboader"></div>
         <div className="todoitems">
-          {this.state.todoList.map((todo) => (
+          {todoList.map((todo) => (
             <TodoItem
-              key={todo._id} data={todo}
-              updateTodoState={(id, completed) => this.updateTodoState(id, completed)}
-              removeTodo={(id) => this.removeTodo(id)}
+              key={todo._id}
+              data={todo}
+              updateTodoState={(id, completed) =>
+                this.props.updateTodoState(id, completed)
+              }
+              removeOneTodo={(id) => this.props.removeOneTodo(id)}
             />
           ))}
         </div>
         <div className="newtodoitem">
           <NewTodoItem
-            createNewTodo={(newtodo) => this.createNewTodo(newtodo)}
-            removeManyTodos={() => this.removeManyTodos()}
+            createNewTodo={(newTodoContent) =>
+              this.props.createNewTodo(newTodoContent)
+            }
+            removemany={() => this.removemany()}
           />
         </div>
       </div>
@@ -134,4 +89,33 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  errorMessage: state.todoListReducer.errorMessage,
+  isFetching: state.todoListReducer.isFetching,
+  todoList: state.todoListReducer.todoList,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTodos: () => {
+      dispatch(fetchTodos());
+    },
+    updateTodoState: (id, completed) => {
+      dispatch(updateTodoState(id, completed));
+    },
+    removeOneTodo: (id) => {
+      dispatch(removeOneTodo(id));
+    },
+    createNewTodo: (newTodoContent) => {
+      dispatch(createNewTodo(newTodoContent));
+    },
+    removeCompletedTodos: (todoList) => {
+      dispatch(removeCompletedTodos(todoList));
+    },
+    searchTodos: (search) => {
+      dispatch(searchTodos(search));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

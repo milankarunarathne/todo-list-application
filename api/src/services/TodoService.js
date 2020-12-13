@@ -107,6 +107,7 @@ class TodoService {
     }
 
     async removeManyTodos (idArray) {
+        // console.log('backend idArray : ', idArray);
         if (_.isEmpty(idArray)) {
             return {
                 status: constants.HTTP_STATUS_CODES.BAD_REQUEST,
@@ -121,15 +122,10 @@ class TodoService {
                     status: constants.HTTP_STATUS_CODES.GONE,
                     body: 'Already Deleted or Doesn\'t Exist'
                 }
-            } else if ( result < idArray.length) {
-                return {
-                    status: constants.HTTP_STATUS_CODES.OK,
-                    body: 'Successfully Deleted and some Todos alredy deleted'
-                }
             } else {
                 return {
                     status: constants.HTTP_STATUS_CODES.OK,
-                    body: 'Successfully Deleted'
+                    body: idArray
                 }
             }
             

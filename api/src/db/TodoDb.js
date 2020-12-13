@@ -65,6 +65,7 @@ class TodoDb {
 
         if ( result ) {
             return _.get(result, 'deletedCount', 0)
+
         }
         return null
     }
